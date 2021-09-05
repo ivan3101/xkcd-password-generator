@@ -1,20 +1,33 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/fs"
 	"os"
 )
 
 func main() {
-	filesystem := os.DirFS("word-lists")
-	fileContent, err := fs.ReadFile(filesystem, "english.txt")
+	words := getListOfWords()
+
+	fmt.Println(words)
+}
+
+func getListOfWords() []string {
+	file, err := os.Open("word-lists/english.txt")
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	words := string(fileContent)
+	defer file.Close()
 
-	fmt.Println(words)
+	scanner := bufio.NewScanner(file)
+
+	var words []string
+
+	for scanner.Scan() {
+		words = append(words, scanner.Text())
+	}
+
+	return words
 }
