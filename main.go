@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/fs"
+	"os"
+)
 
 func main() {
-	fmt.Println("hello world!")
+	filesystem := os.DirFS("word-lists")
+	fileContent, err := fs.ReadFile(filesystem, "english.txt")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	words := string(fileContent)
+
+	fmt.Println(words)
 }
