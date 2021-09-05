@@ -2,14 +2,19 @@ package main
 
 import (
 	"bufio"
+	"crypto/rand"
 	"fmt"
+	"math/big"
 	"os"
 )
 
+const totalOfWordsForPassword = 4
+
 func main() {
 	words := getListOfWords()
+	password := generatePassword(words)
 
-	fmt.Println(words)
+	fmt.Println(password)
 }
 
 func getListOfWords() []string {
@@ -32,4 +37,21 @@ func getListOfWords() []string {
 	}
 
 	return words
+}
+
+func generatePassword(words []string) string {
+	totalWords := big.NewInt(int64(len(words)))
+	var password string
+
+	for i := 1; i <= totalOfWordsForPassword; i++ {
+		randomIndex, err := rand.Int(rand.Reader, totalWords)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		password += " " + words[randomIndex.Int64()]
+	}
+
+	return password
 }
