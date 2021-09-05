@@ -19,7 +19,9 @@ func getListOfWords() []string {
 		fmt.Println(err)
 	}
 
-	defer file.Close()
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
 
 	scanner := bufio.NewScanner(file)
 
