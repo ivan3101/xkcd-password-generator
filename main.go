@@ -41,22 +41,44 @@ func getListOfWords() []string {
 
 func generatePassword(words []string) string {
 	totalWords := big.NewInt(int64(len(words)))
+	var indexesUsed = make(map[int64]string)
 	var password string
 
 	for i := 1; i <= totalOfWordsForPassword; i++ {
-		randomIndex, err := rand.Int(rand.Reader, totalWords)
+		wasIndexAlreadyUsed := true
+		var randomIndex int64
 
-		if err != nil {
-			fmt.Println(err)
+		for wasIndexAlreadyUsed {
+			randomIndex = getRandomIndex(totalWords)
+
+			wasIndexAlreadyUsed = checkIfIndexWasAlreadyUsed(randomIndex, indexesUsed)
 		}
 
+		indexesUsed[randomIndex] = words[randomIndex]
+
 		if len(password) == 0 {
-			password = words[randomIndex.Int64()]
+			password = words[randomIndex]
 			continue
 		}
 
-		password += " " + words[randomIndex.Int64()]
+		password += " " + words[randomIndex]
 	}
 
 	return password
+}
+
+func getRandomIndex(totalWords *big.Int) int64 {
+	randomIndex, err := rand.Int(rand.Reader, totalWords)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return randomIndex.Int64()
+}
+
+func checkIfIndexWasAlreadyUsed(index int64, indexesUsed map[int64]string) bool {
+	_, exists := indexesUsed[index]
+
+	return exists
 }
