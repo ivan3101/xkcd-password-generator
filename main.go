@@ -50,6 +50,11 @@ func generatePassword(words []string) string {
 			fmt.Println(err)
 		}
 
+		if len(password) == 0 {
+			password = words[randomIndex.Int64()]
+			continue
+		}
+
 		password += " " + words[randomIndex.Int64()]
 	}
 
